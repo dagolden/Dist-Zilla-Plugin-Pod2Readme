@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 package Dist::Zilla::Plugin::Pod2Readme;
-# ABSTRACT: Generate README from Pod
+# ABSTRACT: Generate README from Pod, as simply as possible
 
 our $VERSION = '0.001';
 
@@ -11,6 +11,12 @@ use Dist::Zilla 5 ();
 
 use Moose;
 with 'Dist::Zilla::Role::FileGatherer';
+
+=attr filename
+
+Name for the generated README.  Defaults to 'README'.
+
+=cut
 
 has filename => (
     is      => 'ro',
@@ -44,7 +50,7 @@ sub gather_files {
 
 1;
 
-=for Pod::Coverage BUILD
+=for Pod::Coverage gather_files
 
 =head1 SYNOPSIS
 
