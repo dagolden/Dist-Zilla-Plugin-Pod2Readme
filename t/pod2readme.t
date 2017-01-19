@@ -22,5 +22,28 @@ my $root = 'corpus/DZ';
     like( $contents, qr{Foo the foo}, "description appears in README" );
 }
 
+{
+    my $tzil = Builder->from_config(
+        { dist_root => 'corpus/DZT' },
+        {
+            add_files => {
+                'source/dist.ini' => simple_ini(
+                    'GatherDir', [ Pod2Readme => { source_filename => 'lib/DZT/Sample2.pm' } ]
+                )
+            }
+        }
+    );
+
+    ok( $tzil, "created test dist" );
+
+    $tzil->build;
+
+    my $contents = $tzil->slurp_file('build/README');
+
+    like( $contents, qr{DZT::Sample2}, "module name appears in README", );
+
+    like( $contents, qr{Bar the bar}, "description appears in README" );
+}
+
 done_testing;
 # COPYRIGHT

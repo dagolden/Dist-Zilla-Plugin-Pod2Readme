@@ -24,11 +24,26 @@ has filename => (
     default => 'README'
 );
 
+=attr source_filename
+
+The file from which to extract POD for the content of the README.  Defaults to
+the main module of the distribution.
+
+=cut
+
+has source_filename => (
+    is      => 'ro',
+    isa     => 'Str',
+    lazy    => 1,
+    default => sub { $_[0]->zilla->main_module->name }
+);
+
 sub gather_files {
     my $self = shift;
 
     require Dist::Zilla::File::FromCode;
     require Pod::Text;
+    require List::Util;
 
     $self->add_file(
         Dist::Zilla::File::FromCode->new(
@@ -37,7 +52,11 @@ sub gather_files {
                 code => sub {
                     my $parser = Pod::Text->new();
                     $parser->output_string( \( my $text ) );
-                    my $pod = $self->zilla->main_module->content;
+                    my $filename = $self->source_filename;
+                    my $source = List::Util::first { $_->name eq $filename } @{ $self->zilla->files };
+                    $self->log_fatal("File $filename not found to extract readme")
+                      unless defined $source;
+                    my $pod = $source->content;
                     $parser->parse_string_document($pod);
                     return $text;
                 },
