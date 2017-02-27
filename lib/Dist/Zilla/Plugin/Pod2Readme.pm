@@ -5,7 +5,7 @@ use warnings;
 package Dist::Zilla::Plugin::Pod2Readme;
 # ABSTRACT: Generate README from Pod, as simply as possible
 
-our $VERSION = '0.002';
+our $VERSION = '0.004';
 
 use Dist::Zilla 5 ();
 
