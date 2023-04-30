@@ -7,6 +7,8 @@ use Test::DZil;
 
 my $root = 'corpus/DZ';
 
+# Test with pod source in the main module's .pm file
+
 {
     my $tzil = Builder->from_config( { dist_root => 'corpus/DZT' },
         { add_files => { 'source/dist.ini' => simple_ini(qw/GatherDir Pod2Readme/) } } );
@@ -21,6 +23,26 @@ my $root = 'corpus/DZ';
 
     like( $contents, qr{Foo the foo}, "description appears in README" );
 }
+
+# Test with pod source in the main module's corresponding .pod file
+
+{
+    my $tzil = Builder->from_config( { dist_root => 'corpus/DZT2' },
+        { add_files => { 'source/dist.ini' => simple_ini(qw/GatherDir Pod2Readme/) } } );
+
+    ok( $tzil, "created test dist" );
+
+    $tzil->build;
+
+    my $contents = $tzil->slurp_file('build/README');
+
+    like( $contents, qr{DZT::Sample}, "dist name appears in README", );
+
+    like( $contents, qr{Foo the foo}, "description appears in README" );
+}
+
+# Test with pod source in an explicitly named file (source_filename
+# parameter)
 
 {
     my $tzil = Builder->from_config(

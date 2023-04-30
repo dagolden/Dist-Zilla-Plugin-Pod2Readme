@@ -53,6 +53,9 @@ sub gather_files {
                     my $parser = Pod::Text->new();
                     $parser->output_string( \( my $text ) );
                     my $filename = $self->source_filename;
+                    my $pod_filename = $filename;
+                    $pod_filename =~ s/\.pm$/.pod/;
+                    $filename = $pod_filename if -f $pod_filename;
                     my $source = List::Util::first { $_->name eq $filename } @{ $self->zilla->files };
                     $self->log_fatal("File $filename not found to extract readme")
                       unless defined $source;
